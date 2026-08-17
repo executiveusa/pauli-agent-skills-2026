@@ -1,19 +1,35 @@
-# agent-skills
+# agent-skills — Cosmos governed
 
-This is the agent-skills project — a collection of production-grade engineering skills for AI coding agents.
+## Mandatory Cosmos/Pauli preflight
 
-> **Scope:** This file configures agents working on the [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) repository itself, not other projects. Don't copy it into another project or a global agent configuration; the reusable assets are the skills in `skills/`.
+Before any coding or mutation in this repository or a target repository using this skill pack:
+
+1. Read `.pauli-engineering.json` in the target repository.
+2. Read `docs/COSMOS-ENGINEERING-LAW.md` from the canonical `executiveusa/pauli-agent-skills-2026` policy source.
+3. Load `laws/BROWNFIELD.md` or `laws/GREENFIELD.md` according to the target policy. Meaningful existing state defaults to brownfield.
+4. Run `node scripts/pauli-preflight.js` from the target repo or the equivalent packaged preflight.
+5. Stop on preflight failure.
+6. Invoke all applicable skills; do not bypass skills because a change is small.
+7. Require proof, independent review, Gauntlet, rollback, and `selfApproved: false` before release review. Frontend/product work also requires the Collins gate.
+
+Configured is not connected. Connected is not healthy. Healthy is not verified. Verified is not production.
+
+---
+
+This is the agent-skills project — a collection of production-grade engineering skills for AI coding agents, preserving upstream `addyosmani/agent-skills` provenance while adding the Pauli/Cosmos governance layer.
 
 ## Project Structure
 
 ```
 skills/       → Core skills (SKILL.md per directory)
-agents/       → Reusable agent personas (code-reviewer, test-engineer, security-auditor, web-performance-auditor)
+agents/       → Reusable agent personas
 hooks/        → Session lifecycle hooks
-.claude/commands/ → Slash commands (/spec, /plan, /build, /test, /review, /code-simplify, /ship; plus /webperf specialist audit)
-references/   → Supplementary checklists (testing, performance, security, accessibility, observability)
-evals/        → Skill eval cases + framework (see evals/README.md)
-docs/         → Setup guides for different tools
+.claude/commands/ → Slash commands
+references/   → Supplementary checklists
+evals/        → Skill eval cases + framework
+docs/         → Setup guides and Cosmos policy
+laws/         → Brownfield and greenfield mandatory laws
+contracts/    → Machine-readable policy/proof contracts
 ```
 
 ## Skills by Phase
@@ -27,34 +43,24 @@ docs/         → Setup guides for different tools
 
 ## Conventions
 
-- Every skill lives in `skills/<name>/SKILL.md`
-- YAML frontmatter with `name` and `description` fields
-- Description starts with what the skill does (third person), followed by trigger conditions ("Use when...")
-- Every skill has: Overview, When to Use, Process, Common Rationalizations, Red Flags, Verification
-- Shared references are in the root `references/` directory; the emerging convention for self-contained, distributable skills keeps a skill's own references inside `skills/<name>/references/`
-- Supporting files only created when content exceeds 100 lines
-
-## Contributing
-
-Before adding a new skill or significantly reworking an existing one, run the pre-flight checks in [CONTRIBUTING.md](CONTRIBUTING.md#before-proposing-a-new-skill): search the catalog, check open PRs, confirm the idea fits [docs/skill-anatomy.md](docs/skill-anatomy.md), and justify the gap. Prefer extending an existing skill over adding a near-duplicate. CONTRIBUTING.md is the single source of truth for this workflow; do not restate its checklist here or elsewhere, link to it.
+- Every skill lives in `skills/<name>/SKILL.md`.
+- Follow `CONTRIBUTING.md` and `docs/skill-anatomy.md` for new or changed skills.
+- Prefer extending an existing skill over adding a near-duplicate.
+- Do not duplicate policy per model; adapters point to the canonical law.
 
 ## Commands
 
-- `npm test` — Not applicable (this is a documentation project)
-- Validate: Check that all SKILL.md files have valid YAML frontmatter with name and description
-- Evals: `node scripts/run-evals.js` — trigger/routing evals for every skill (CI); `--behavioral <skill>` for graded runs
-
-## Pull Requests
-
-PRs target the upstream repository's default branch. In a typical fork setup the upstream remote is `upstream` and your fork is `origin`, but the exact remote names are not what matters here.
-
-- Before opening a PR, search the upstream repository's open PRs and issues for work that touches the same files or rules. If any overlaps, coordinate (build on it, align your rules with it, or rebase after it merges) instead of opening a conflicting PR.
-- Prefer small, focused PRs over large refactors of widely shared files (for example, files under `scripts/`), which are more likely to collide with in-flight work.
+- Policy preflight: `node scripts/pauli-preflight.js`
+- Release evidence gate: `node scripts/pauli-release-gate.js <proof-receipt.json>`
+- Skill validation: `node scripts/validate-skills.js`
+- Evals: `node scripts/run-evals.js`
 
 ## Boundaries
 
-- Always: Run the CONTRIBUTING.md pre-flight checks before creating a new skill directory
-- Always: Follow the skill-anatomy.md format for new skills
-- Always: Check the upstream repo's open PRs and issues for overlap before opening a new PR
-- Never: Add skills that are vague advice instead of actionable processes
-- Never: Duplicate content between skills — reference other skills instead
+- Always: run policy preflight before mutation.
+- Always: establish Walk Test, baseline, bounded scope, and rollback.
+- Always: use applicable skills and objective verification.
+- Always: independent review before release.
+- Never: self-approve.
+- Never: claim completion from a successful request/HTTP response without outcome evidence.
+- Never: weaken repository/system human approval boundaries.
