@@ -1,92 +1,73 @@
 # AGENTS.md
 
-This file provides guidance to AI coding agents (Claude Code, Cursor, Copilot, Antigravity, etc.) when working with code in this repository.
+This repository is the canonical engineering-policy and reusable skill source for Cosmos coding agents.
 
-> **Scope:** This file configures agents working on the [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) repository itself. It is not meant to be copied into other projects or into a global agent configuration; the reusable assets are the skills in `skills/`, not this file.
+## Mandatory Pauli Engineering Law
 
-## Repository Overview
+Before touching code, every coding agent MUST:
 
-A collection of skills for Claude.ai and Claude Code for senior software engineers. Skills are packaged instructions and scripts that extend Claude and your coding agents capabilities.
+1. Read `.pauli-engineering.json`.
+2. Load `docs/COSMOS-ENGINEERING-LAW.md`.
+3. Load `laws/BROWNFIELD.md` or `laws/GREENFIELD.md` according to the configured mode. If there is any meaningful shipped behavior, data, deployment, integration, or history, use brownfield.
+4. Run `node scripts/pauli-preflight.js` from the target repository or an equivalent packaged invocation.
+5. Stop if preflight fails. Do not rationalize around a failed gate.
+6. Use the applicable skills from `skills/` for the requested task.
+7. Produce objective verification and a proof receipt before release review.
+8. Never self-approve. Independent review and Gauntlet are mandatory before release; relevant frontend/product work also requires the Collins gate.
 
-## OpenCode Integration
+Configured is not connected. Connected is not healthy. Healthy is not verified. Verified is not production.
 
-OpenCode uses a **skill-driven execution model** powered by the `skill` tool and this repository's `/skills` directory.
+## Walk Test
 
-### Core Rules
+A fresh authorized agent must be able to identify, without guessing:
 
-- If a task matches a skill, you MUST invoke it
-- Skills are located in `skills/<skill-name>/SKILL.md`
-- Never implement directly if a skill applies
-- Always follow the skill instructions exactly (do not partially apply them)
+- what the repository is;
+- what it owns and does not own;
+- current architecture and deployed state;
+- what may and may not change;
+- applicable skills and context;
+- external systems and authority boundaries;
+- acceptance/proof requirements;
+- approval authority;
+- rollback and handoff path.
 
-### Intent → Skill Mapping
+If this cannot be established, `BUILD_ALLOWED=false` until context is repaired.
 
-The agent should automatically map user intent to skills:
+## Skill-driven execution
+
+If a task matches a skill, the skill is mandatory. Skills live at `skills/<skill-name>/SKILL.md`.
+
+Common mappings:
 
 - Feature / new functionality → `spec-driven-development`, then `incremental-implementation`, `test-driven-development`
 - Planning / breakdown → `planning-and-task-breakdown`
-- Bug / failure / unexpected behavior → `debugging-and-error-recovery`
+- Bug / failure → `debugging-and-error-recovery`
 - Code review → `code-review-and-quality`
-- Refactoring / simplification → `code-simplification`
-- API or interface design → `api-and-interface-design`
+- Refactoring → `code-simplification`
+- API/interface design → `api-and-interface-design`
 - UI work → `frontend-ui-engineering`
+- Browser validation → `browser-testing-with-devtools`
+- Security → `security-and-hardening`
+- Release → `shipping-and-launch`
 
-### Lifecycle Mapping (Implicit Commands)
+Lifecycle:
 
-OpenCode does not support slash commands like `/spec` or `/plan`.
+DEFINE → PLAN → BUILD → VERIFY → REVIEW → GAUNTLET → RELEASE AUTHORITY
 
-Instead, the agent must internally follow this lifecycle:
+Do not partially apply a workflow because the task appears small.
 
-- DEFINE → `spec-driven-development`
-- PLAN → `planning-and-task-breakdown`
-- BUILD → `incremental-implementation` + `test-driven-development`
-- VERIFY → `debugging-and-error-recovery`
-- REVIEW → `code-review-and-quality`
-- SHIP → `shipping-and-launch`
+## Personas, skills, and commands
 
-### Execution Model
+- Skills (`skills/<name>/SKILL.md`) define the workflow: the how.
+- Personas (`agents/<role>.md`) define perspective/output: the who.
+- Platform commands/hooks define invocation: the when.
 
-For every request:
+Personas do not create nested orchestration chains. Builders may use independent reviewers but do not certify themselves.
 
-1. Determine if any skill applies (even 1% chance)
-2. Invoke the appropriate skill using the `skill` tool
-3. Follow the skill workflow strictly
-4. Only proceed to implementation after required steps (spec, plan, etc.) are complete
+## Upstream provenance
 
-### Anti-Rationalization
+This repository originated from and continues to preserve substantial work from `addyosmani/agent-skills`. Preserve upstream attribution and licensing. The Pauli/Cosmos layer adds governance, enforcement, Walk Test, proof, rollback, independent review, and release policy above the reusable engineering skills.
 
-The following thoughts are incorrect and must be ignored:
+## Creating or changing skills
 
-- "This is too small for a skill"
-- "I can just quickly implement this"
-- "I’ll gather context first"
-
-Correct behavior:
-
-- Always check for and use skills first
-
-This ensures OpenCode behaves similarly to Claude Code with full workflow enforcement.
-
-## Orchestration: Personas, Skills, and Commands
-
-This repo has three composable layers. They have different jobs and should not be confused:
-
-- **Skills** (`skills/<name>/SKILL.md`) — workflows with steps and exit criteria. The *how*. Mandatory hops when an intent matches.
-- **Personas** (`agents/<role>.md`) — roles with a perspective and an output format. The *who*.
-- **Slash commands** (`.claude/commands/*.md`) — user-facing entry points. The *when*. The orchestration layer.
-
-Composition rule: **the user (or a slash command) is the orchestrator. Personas do not invoke other personas.** A persona may invoke skills.
-
-The only multi-persona orchestration pattern this repo endorses is **parallel fan-out with a merge step** — used by `/ship` to run `code-reviewer`, `security-auditor`, and `test-engineer` concurrently and synthesize their reports. Do not build a "router" persona that decides which other persona to call; that's the job of slash commands and intent mapping.
-
-See [docs/agents.md](docs/agents.md) for the decision matrix and [references/orchestration-patterns.md](references/orchestration-patterns.md) for the full pattern catalog.
-
-**Claude Code interop:** the personas in `agents/` work as Claude Code subagents (auto-discovered from this plugin's `agents/` directory) and as Agent Teams teammates (referenced by name when spawning). Two platform constraints align with our rules: subagents cannot spawn other subagents, and teams cannot nest. Plugin agents silently ignore the `hooks`, `mcpServers`, and `permissionMode` frontmatter fields.
-
-## Creating a New Skill
-
-> **Before you start:** run the pre-flight checks in [CONTRIBUTING.md](CONTRIBUTING.md#before-proposing-a-new-skill), search the catalog, check open PRs (`gh pr list --state open`), confirm the idea fits [docs/skill-anatomy.md](docs/skill-anatomy.md), and justify the gap in your PR description. Most new-skill ideas overlap an existing skill or an open PR; prefer extending an existing skill over adding a near-duplicate. CONTRIBUTING.md is the single source of truth for this workflow.
-
-Skills in this repo are markdown-first: each lives at `skills/<kebab-case-name>/SKILL.md` with YAML frontmatter (`name`, `description`) and follows the section anatomy (Overview, When to Use, Process, Common Rationalizations, Red Flags, Verification). Add a `scripts/` directory only when the skill ships runnable helpers; most skills are markdown only, and there are no per-skill zip packages.
-
-For the full format, naming conventions, frontmatter rules, supporting-file thresholds, and writing principles, see [docs/skill-anatomy.md](docs/skill-anatomy.md), the single source of truth for skill structure. Do not restate that guidance here, link to it.
+Before adding a new skill, search the existing catalog and open work. Prefer extending an existing skill over creating near-duplicates. Follow `CONTRIBUTING.md` and `docs/skill-anatomy.md` for skill structure.
