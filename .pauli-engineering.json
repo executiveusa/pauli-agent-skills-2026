@@ -1,0 +1,10 @@
+{
+  "policyVersion": "1.0.0",
+  "policySource": "executiveusa/pauli-agent-skills-2026",
+  "mode": "brownfield",
+  "walkTest": { "required": true },
+  "proof": { "required": true },
+  "gauntlet": { "required": true, "collinsForFrontend": true },
+  "selfApproval": false,
+  "approvalAuthority": "Bambu"
+}
