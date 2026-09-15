@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thepaulieffect.com/schemas/proof-receipt.schema.json",
+  "title": "Pauli Engineering Proof Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["policyVersion", "mode", "walkTest", "baselineSha", "scope", "changedFiles", "checks", "externalVerification", "independentReview", "gauntlet", "rollback", "selfApproved", "status"],
+  "properties": {
+    "policyVersion": { "type": "string", "const": "1.0.0" },
+    "mode": { "enum": ["brownfield", "greenfield"] },
+    "walkTest": { "enum": ["PASS", "FAIL"] },
+    "baselineSha": { "type": "string", "minLength": 7 },
+    "scope": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "changedFiles": { "type": "array", "items": { "type": "string" } },
+    "checks": { "type": "array", "items": { "type": "object", "required": ["name", "status"], "properties": { "name": { "type": "string" }, "command": { "type": ["string", "null"] }, "status": { "enum": ["PASS", "FAIL", "NOT_APPLICABLE"] }, "evidence": { "type": ["string", "null"] } }, "additionalProperties": true } },
+    "externalVerification": { "type": "array", "items": { "type": "object" } },
+    "independentReview": { "type": "object", "required": ["performed", "reviewer"], "properties": { "performed": { "const": true }, "reviewer": { "type": "string", "minLength": 1 }, "result": { "enum": ["PASS", "FAIL", "CHANGES_REQUIRED"] } }, "additionalProperties": true },
+    "gauntlet": { "enum": ["PASS", "FAIL", "NOT_APPLICABLE"] },
+    "collins": { "enum": ["PASS", "FAIL", "NOT_APPLICABLE"] },
+    "rollback": { "type": "string", "minLength": 1 },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "selfApproved": { "const": false },
+    "status": { "enum": ["READY_FOR_REVIEW", "BLOCKED", "VERIFIED"] }
+  }
+}

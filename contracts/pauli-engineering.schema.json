@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thepaulieffect.com/schemas/pauli-engineering.schema.json",
+  "title": "Pauli Engineering Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["policyVersion", "mode", "walkTest", "proof", "gauntlet", "selfApproval"],
+  "properties": {
+    "policyVersion": { "type": "string", "const": "1.0.0" },
+    "mode": { "enum": ["brownfield", "greenfield"] },
+    "walkTest": { "type": "object", "required": ["required"], "properties": { "required": { "const": true } }, "additionalProperties": true },
+    "proof": { "type": "object", "required": ["required"], "properties": { "required": { "const": true } }, "additionalProperties": true },
+    "gauntlet": { "type": "object", "required": ["required"], "properties": { "required": { "const": true }, "collinsForFrontend": { "type": "boolean", "default": true } }, "additionalProperties": true },
+    "selfApproval": { "const": false },
+    "approvalAuthority": { "type": ["string", "null"] },
+    "policySource": { "type": "string", "default": "executiveusa/pauli-agent-skills-2026" }
+  }
+}

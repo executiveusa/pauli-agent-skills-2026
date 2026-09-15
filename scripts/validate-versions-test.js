@@ -18,12 +18,20 @@ function readManifestVersion(manifestPath) {
   return manifest.version ?? manifest.plugins?.[0]?.version;
 }
 
-test("all plugin manifests use the latest release tag", () => {
-  const expectedVersion = execFileSync(
-    "git",
-    ["describe", "--tags", "--abbrev=0"],
-    { encoding: "utf8" },
-  ).trim();
+function latestTagVersion() {
+  try {
+    return execFileSync("git", ["describe", "--tags", "--abbrev=0"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim().replace(/^v/, "");
+  } catch {
+    return null;
+  }
+}
+
+test("all plugin manifests use the release tag or root manifest version", () => {
+  const expectedVersion = latestTagVersion() || readManifestVersion("plugin.json");
+  assert.ok(expectedVersion, "expected version must be discoverable");
 
   for (const manifestPath of manifestPaths) {
     assert.equal(

@@ -1,0 +1,29 @@
+name: Cosmos Engineering Policy
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'architecture/**'
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate policy JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('.pauli-engineering.json','utf8')); JSON.parse(require('fs').readFileSync('contracts/pauli-engineering.schema.json','utf8')); JSON.parse(require('fs').readFileSync('contracts/proof-receipt.schema.json','utf8'));"
+      - name: Syntax check policy gates
+        run: |
+          node --check scripts/pauli-preflight.js
+          node --check scripts/pauli-release-gate.js
+      - name: Run mandatory preflight
+        run: node scripts/pauli-preflight.js
+      - name: Validate existing skills
+        run: node scripts/validate-skills.js
