@@ -1,0 +1,29 @@
+{
+  "skill_name": "gauntlet-loop",
+  "trigger": {
+    "positive": [
+      {"prompt": "Run the gauntlet on this landing page until it beats the named reference", "top_k": 3},
+      {"prompt": "Gauntlet this generated UGC video against the creator footage", "top_k": 3},
+      {"prompt": "Use a builder and fresh harsh critic and loop until ours wins blind", "top_k": 3}
+    ],
+    "negative": [
+      {"prompt": "Fix this failing unit test", "owner": "debugging-and-error-recovery"},
+      {"prompt": "Find the current price of this subscription", "owner": "source-driven-development"}
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "kind": "dialogue",
+      "prompt": "Run a gauntlet on a paid AI UGC pipeline against a named human reference.",
+      "expected_output": "A fetchable reference, separate builder and blind critic, binary MATCH/NOT MATCH rounds, receipts, and spend/approval stops",
+      "expectations": [
+        "The actual reference must be retrieved instead of reconstructed from a description",
+        "Builder and critic use separate contexts and the critic chooses blind",
+        "Hard failures cannot be averaged into a pass",
+        "Paid retries stop at an approved ceiling and include rejected attempts in cost",
+        "A quality pass does not imply approval to publish"
+      ]
+    }
+  ]
+}
