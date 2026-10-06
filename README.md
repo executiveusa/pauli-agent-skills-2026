@@ -267,6 +267,7 @@ The commands above are entry points. The pack includes 25 skills total — 24 wo
 | [code-review-and-quality](skills/code-review-and-quality/SKILL.md) | Five-axis review, change sizing (~100 lines), severity labels (Nit/Optional/FYI), review speed norms, splitting strategies | Before merging any change |
 | [code-simplification](skills/code-simplification/SKILL.md) | Chesterton's Fence, Rule of 500, reduce complexity while preserving exact behavior | Code works but is harder to read or maintain than it should be |
 | [security-and-hardening](skills/security-and-hardening/SKILL.md) | OWASP Top 10 prevention, auth patterns, secrets management, dependency auditing, three-tier boundary system | Handling user input, auth, data storage, or external integrations |
+| [security-audit](skills/security-audit/SKILL.md) | Vendored from Cloudflare (MIT): source-first vulnerability audit workflow with a schema-validated findings contract | A security audit, pen test, or vulnerability review is requested, or StarNet's ship gate needs an audit receipt |
 | [performance-optimization](skills/performance-optimization/SKILL.md) | Measure-first approach - Core Web Vitals targets, profiling workflows, bundle analysis, anti-pattern detection | Performance requirements exist or you suspect regressions |
 
 ### Ship - Deploy with confidence
@@ -348,7 +349,7 @@ Every skill follows a consistent anatomy:
 
 ```
 agent-skills/
-├── skills/                            # 25 skills (24 workflow + 1 meta)
+├── skills/                            # 26 skills (24 workflow + 1 vendored + 1 meta)
 │   ├── interview-me/                  #   Define
 │   ├── idea-refine/                   #   Define
 │   ├── spec-driven-development/       #   Define
@@ -365,6 +366,7 @@ agent-skills/
 │   ├── code-review-and-quality/       #   Review
 │   ├── code-simplification/           #   Review
 │   ├── security-and-hardening/        #   Review
+│   ├── security-audit/                #   Review (vendored: Cloudflare, MIT)
 │   ├── performance-optimization/      #   Review
 │   ├── git-workflow-and-versioning/   #   Ship
 │   ├── ci-cd-and-automation/          #   Ship
