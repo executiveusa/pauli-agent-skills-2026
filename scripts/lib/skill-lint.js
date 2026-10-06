@@ -57,6 +57,7 @@ const REQUIRED_SECTIONS = [
 const SECTION_EXEMPT_SKILLS = {
   'using-agent-skills': 'Meta-skill — orchestrates other skills; When-to-Use and Verification are not applicable to a routing document.',
   'idea-refine':        'Legacy structure predating skill-anatomy.md — uses How-It-Works/Usage/Anti-patterns instead of standard headings. Tracked for conformance in https://github.com/addyosmani/agent-skills/issues',
+  'security-audit':     'Third-party vendored skill (Cloudflare security-audit-skill, MIT, pinned commit c1c8a8c) — kept byte-identical to upstream for provenance; standard sections do not apply. See skills/security-audit/PROVENANCE.md.',
 };
 
 // Regex patterns that indicate an explicit cross-skill reference.
